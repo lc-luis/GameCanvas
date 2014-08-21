@@ -13,6 +13,7 @@ var nave =
 
 //Eventos del teclado
 var teclado = {};
+var disparos = [];
 
 //Definir variables para las imagenes
 var fondo;
@@ -47,7 +48,7 @@ function agregarEventosTeclado()
 	{
 		//Ponemos en true la tecla presionada
 		teclado[e.keyCode] = true;
-		//console.log(e.keyCode);
+		console.log(e.keyCode);
 	});
 	agregarEventos(document, "keyup", function(e)
 	{
@@ -72,7 +73,7 @@ function agregarEventosTeclado()
 
 function moverNave()
 {
-	if(teclado[37])
+	if(teclado[37])//Flecha izquierda
 	{
 		//Movimiento a la izquierda
 		nave.x -=10;
@@ -81,7 +82,7 @@ function moverNave()
 			nave.x = 0;
 		}
 	}
-	if(teclado[39])
+	if(teclado[39])//Flecha derecha
 	{
 		//Movimiento a la derecha
 		var limite = canvas.width - nave.width;
@@ -91,12 +92,63 @@ function moverNave()
 			nave.x = limite;
 		}
 	}
+	if(teclado[32])//Espacio
+	{
+		if(!teclado.fire)
+		{
+			//Disparo
+			fire();
+			teclado.fire = true;
+		}	
+	}
+	else
+	{
+		teclado.fire = false;
+	}
+}
+
+function moverDisparos()
+{
+	for(var i in disparos)
+	{
+		var disparo = disparos[i];
+		disparo.y -= 2;
+	}
+	disparos = disparos.filter(function(disparo)
+		{
+			return disparo.y > 0;
+		});
+}
+
+function fire()
+{
+	disparos.push
+	({
+		x: nave.x + 20,
+		y: nave.y - 10,
+		width: 10,
+		height: 30
+	});
+}
+
+function dibujarDisparos()
+{
+	ctx.save();
+	ctx.fillStyle = "white";
+	for(var i in disparos)
+	{
+		var disparo = disparos[i];
+		ctx.fillRect(disparo.x, disparo.y, disparo.width, disparo.height);
+	}
+	ctx.restore()
 }
 
 function frameLoop()
 {
 	moverNave();
+	moverDisparos();
 	dibujarBackground();
+	dibujarDisparos();
 	dibujarNave();
 }
 //Ejecutando funciones
