@@ -226,9 +226,9 @@ function actualizaEnemigos()
 
 				if(aleatorio(0,enemigos.length * 10) == 4)
 				{
-					soundInvaderShoot.pause();
+					/*soundInvaderShoot.pause();
 					soundInvaderShoot.currentTime = 0;
-					soundInvaderShoot.play();
+					soundInvaderShoot.play();*/
 					disparosEnemigos.push(agregarDisparosEnemigos(enemigo));
 				}
 			}
@@ -284,9 +284,9 @@ function fire()
 {
 	disparos.push
 	({
-		soundShoot.pause();
+		/*soundShoot.pause();
 		soundShoot.currentTime = 0;
-		soundShoot.play();
+		soundShoot.play();*/
 		x: nave.x + 20,
 		y: nave.y - 10,
 		width: 10,
@@ -340,9 +340,9 @@ function verificarContacto()
 			var enemigo = enemigos[j];
 			if(hit(disparo,enemigo))
 			{
-				soundDeadInvader.pause();
-				soundDeadInvader.currentTime = 0;
-				soundDeadInvader.play();
+				// soundDeadInvader.pause();
+				// soundDeadInvader.currentTime = 0;
+				// soundDeadInvader.play();
 				disparo.estado = 'hit';
 				enemigo.estado = 'hit';
 				enemigo.contador = 0;
@@ -360,7 +360,10 @@ function verificarContacto()
 			var disparo = disparosEnemigos[i];
 			if(hit(disparo,nave))
 			{
+				soundDeadSpace.play();
+				disparo.estado = 'hit';
 				nave.estado = 'hit';
+				nave.contador = 0;
 			}
 		}
 	} 
