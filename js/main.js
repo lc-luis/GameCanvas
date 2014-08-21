@@ -33,17 +33,40 @@ var disparos = [];
 var disparosEnemigos = [];
 
 //Definir variables para las imagenes
-var fondo;
+var fondo, imgSpaceShip, imgInvader, imgShoot, imgInvaderShoot, soundDeadSapce, soundDeadInvader, soundEndGame, space;
+//Variables de sonidos
+var soundShoot, soundInvaderShoot;
 
-//Definir funciones
 function loadMedia()
 {
-	fondo = new Image();
-	fondo.src = "media/img/espacio.png";
-	fondo.onload = function()
-	{
-		var intervalo = window.setInterval(frameLoop, 1000/55);
-	}
+    //Esta función carga las imágenes y el audio
+    //Primero cargamos las imágenes
+    imgSpaceShip = new Image();
+    imgSpaceShip.src = 'media/img/spaceship.png';
+    imgInvader = new Image();
+    imgInvader.src = 'media/img/monster.png';
+    imgShoot = new Image();
+    imgShoot.src = 'media/img/laser.png';
+    imgInvaderShoot = new Image();
+    imgInvaderShoot.src = 'media/img/enemyLaser.png';
+    fondo = new Image();
+    fondo.src = 'media/img/espacio.png';
+    //Ahora cargamos el sonido haciendo uso de <audio> de HTML5
+    soundShoot = document.createElement('audio');
+    document.body.appendChild(soundShoot);
+    soundShoot.setAttribute('src', 'media/audio/laserSpace.wav');
+    soundInvaderShoot = document.createElement('audio');
+    document.body.appendChild(soundInvaderShoot);
+    soundInvaderShoot.setAttribute('src', 'media/audio/laserAlien.wav');
+    soundDeadSpace = document.createElement('audio');
+    document.body.appendChild(soundDeadSpace);
+    soundDeadSpace.setAttribute('src', 'media/audio/deadSpaceShip.wav');
+    soundDeadInvader = document.createElement('audio');
+    document.body.appendChild(soundDeadInvader);
+    soundDeadInvader.setAttribute('src', 'media/audio/deadInvader.wav');
+    soundEndGame = document.createElement('audio');
+    document.body.appendChild(soundEndGame);
+    soundEndGame.setAttribute('src', 'media/audio/endGame.wav');
 }
 
 function dibujarBackground()
@@ -53,10 +76,10 @@ function dibujarBackground()
 
 function dibujarNave()
 {
-	ctx.save();
-	ctx.fillStyle = 'white';
-	ctx.fillRect(nave.x, nave.y, nave.width, nave.height);
-	ctx.restore();
+	//ctx.save();
+	//ctx.fillStyle = 'white';
+	ctx.drawImage(imgSpaceShip, nave.x, nave.y, nave.width, nave.height);
+	//ctx.restore();
 }
 
 function dibujarEnemigos()
@@ -74,7 +97,7 @@ function dibujarEnemigos()
 		{
 			ctx.fillStyle = 'black';
 		}
-		ctx.fillRect(enemigo.x, enemigo.y, enemigo.width, enemigo.height);
+		ctx.drawImage(imgInvader, enemigo.x, enemigo.y, enemigo.width, enemigo.height);
 	}
 }
 function agregarEventosTeclado()
@@ -160,10 +183,7 @@ function dibujarDisparosEnemigos()
 	for(var i in disparosEnemigos)
 	{
 		disparo = disparosEnemigos[i];
-		ctx.save();
-		ctx.fillStyle = 'yellow';
-		ctx.fillRect(disparo.x, disparo.y, disparo.width, disparo.height);
-		ctx.restore();
+		ctx.drawImage(imgInvaderShoot, disparo.x, disparo.y, disparo.width, disparo.height);
 	}
 }
 
@@ -188,6 +208,7 @@ function actualizaEnemigos()
 				y: 10,
 				height: 40,
 				width: 40,
+				phase: Math.floor(Math.random()*50),
 				estado: 'vivo',
 				contador: 0
 			});
@@ -205,6 +226,9 @@ function actualizaEnemigos()
 
 				if(aleatorio(0,enemigos.length * 10) == 4)
 				{
+					soundInvaderShoot.pause();
+					soundInvaderShoot.currentTime = 0;
+					soundInvaderShoot.play();
 					disparosEnemigos.push(agregarDisparosEnemigos(enemigo));
 				}
 			}
@@ -260,6 +284,9 @@ function fire()
 {
 	disparos.push
 	({
+		soundShoot.pause();
+		soundShoot.currentTime = 0;
+		soundShoot.play();
 		x: nave.x + 20,
 		y: nave.y - 10,
 		width: 10,
@@ -269,14 +296,11 @@ function fire()
 
 function dibujarDisparos()
 {
-	ctx.save();
-	ctx.fillStyle = "white";
 	for(var i in disparos)
 	{
 		var disparo = disparos[i];
-		ctx.fillRect(disparo.x, disparo.y, disparo.width, disparo.height);
+		ctx.drawImage(imgShoot, disparo.x, disparo.y, disparo.width, disparo.height);
 	}
-	ctx.restore()
 }
 
 function hit(a,b)
@@ -316,6 +340,10 @@ function verificarContacto()
 			var enemigo = enemigos[j];
 			if(hit(disparo,enemigo))
 			{
+				soundDeadInvader.pause();
+				soundDeadInvader.currentTime = 0;
+				soundDeadInvader.play();
+				disparo.estado = 'hit';
 				enemigo.estado = 'hit';
 				enemigo.contador = 0;
 			}
@@ -380,6 +408,7 @@ function actualizarEstadoJuego()
 	if(juego.estado == 'jugando' && enemigos.length == 0)
 	{
 		juego.estado = 'victoria';
+		soundEndGame.play();
 		textoRespuesta.titulo = 'Derrotaste a los enemigos';
 		textoRespuesta.subtitulo = 'Pulsa R para reiniciar';
 		textoRespuesta.contador = 0;

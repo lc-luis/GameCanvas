@@ -10,9 +10,29 @@
 			box-shadow: 10px 10px 5px -2px rgba(0,0,0,0.75);
 		}
 	</style>
+	<link rel="stylesheet" href="css/stylesheet.css">
+	<link href='http://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<canvas id="game" width="800" height="400"></canvas>
+	<div id='preloader'>
+		<header>
+			<h1>Cargando</h1>
+		</header>
+		<canvas id='miCanvas' width='200' height='200'></canvas>
+		<span id='porcentaje'>0%</span>
+	</div>
+	<div id='wrapper'>
+		<header>
+			<h1>Juego de Naves 1.0</h1>
+		</header>
+		<p>Flechas izquierda y derecha para moverse, barra espaciadora para disparar.</p>
+		<div id='main'>
+			<canvas id="game" width="800" height="400"></canvas>
+		</div>
+	</div>
+	<script src='http://code.jquery.com/jquery-1.7.2.min.js'></script>
+	<script src='js/preloadjs-0.1.0.min.js'></script>
+	<script src='js/mScript.js'></script>
 	<script src="js/main.js"></script>
 </body>
 </html>
